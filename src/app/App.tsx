@@ -2,34 +2,24 @@
 // import Button from '@mui/material/Button'
 import '../css/app.css'
 // import { RippleBadge } from './MaterialTheme/styled'
-import { Link, Route, Switch } from 'react-router-dom'
+import { Route, Switch, useLocation } from 'react-router-dom'
+import { Footer } from './components/footer'
+import { HomeNavbar } from './components/headers/HomeNavbar'
+import { OtherNavbar } from './components/headers/OtherNavbar'
 import { HomePage } from './screens/homePage'
 import { OrdersPage } from './screens/ordersPage'
 import { ProductsPage } from './screens/productsPage'
 import { UserPage } from './screens/userPage'
 
 function App() {
-	return (
-		<div>
-			<nav>
-				<ul>
-					<li>
-						<Link to='/'>HomePage</Link>
-					</li>
-					<li>
-						<Link to='/products'>ProductsPage</Link>
-					</li>
-					<li>
-						<Link to='orders'>OrdersPage</Link>
-					</li>
-					<li>
-						<Link to='/member-page'>UsersPage</Link>
-					</li>
-				</ul>
-			</nav>
+	const location = useLocation()
+	console.log('====================================')
+	console.log(location)
+	console.log('====================================')
 
-			{/* A <Switch> looks through its children <Route>s and
-            renders the first one that matches the current URL. */}
+	return (
+		<>
+			{location.pathname === '/' ? <HomeNavbar /> : <OtherNavbar />}
 			<Switch>
 				<Route path='/products'>
 					<ProductsPage />
@@ -44,7 +34,8 @@ function App() {
 					<HomePage />
 				</Route>
 			</Switch>
-		</div>
+			<Footer />
+		</>
 	)
 }
 
