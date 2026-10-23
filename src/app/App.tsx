@@ -3,9 +3,11 @@
 import '../css/app.css'
 // import { RippleBadge } from './MaterialTheme/styled'
 import { Route, Switch, useLocation } from 'react-router-dom'
+import '../css/navbar.css'
 import { Footer } from './components/footer'
 import { HomeNavbar } from './components/headers/HomeNavbar'
 import { OtherNavbar } from './components/headers/OtherNavbar'
+import { HelpPage } from './screens/helpPage'
 import { HomePage } from './screens/homePage'
 import { OrdersPage } from './screens/ordersPage'
 import { ProductsPage } from './screens/productsPage'
@@ -29,6 +31,9 @@ function App() {
 				</Route>
 				<Route path='/member-page'>
 					<UserPage />
+				</Route>
+				<Route path='/help'>
+					<HelpPage />
 				</Route>
 				<Route path='/'>
 					<HomePage />
