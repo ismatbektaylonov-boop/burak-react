@@ -78,8 +78,6 @@ export function HomeNavbar() {
 							<img />
 						)}
 					</Stack>
-
-					<Box>3</Box>
 				</Stack>
 
 				<Stack>DETAIL</Stack>
