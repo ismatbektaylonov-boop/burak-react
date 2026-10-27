@@ -8,31 +8,19 @@ export function HomeNavbar() {
 	const authUser = null
 	return (
 		<div className='home-navbar'>
-			<Container sx={{ mt: '55px', height: '642px' }}>
-				<Stack
-					direction={'row'}
-					sx={{
-						minWidth: '700px',
-						justifyContent: 'space-between',
-						alignItems: 'center',
-					}}
-				>
+			<Container className='navbar-container'>
+				<Stack className='menu'>
 					<Box>
 						<NavLink to='/'>
 							<img
+								className='brand-logo'
 								src='/icons/burak.svg'
+								alt='logo'
 								style={{ width: '125px', height: '30px' }}
 							></img>
 						</NavLink>
 					</Box>
-					<Stack
-						direction={'row'}
-						sx={{
-							minWidth: '700px',
-							justifyContent: 'space-between',
-							alignItems: 'center',
-						}}
-					>
+					<Stack className='links'>
 						<Box className={'hover-line'}>
 							<NavLink activeClassName={'underline'} to='/'>
 								Home
@@ -68,6 +56,7 @@ export function HomeNavbar() {
 						{!authUser ? (
 							<Box>
 								<Button
+									className='login-button'
 									variant='contained'
 									style={{ background: '#3776CC', color: '#f8f8ff' }}
 								>
@@ -75,7 +64,11 @@ export function HomeNavbar() {
 								</Button>
 							</Box>
 						) : (
-							<img />
+							<img
+								style={{ width: '50px', height: '50px', borderRadius: '24px' }}
+								src={'/icons/default-user.svg'}
+								alt='user'
+							/>
 						)}
 					</Stack>
 				</Stack>
