@@ -2,16 +2,28 @@ import { Container } from '@mui/material'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import { Stack } from '@mui/system'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import Basket from './Basket'
 
 export function HomeNavbar() {
 	const authUser = null
-	const [count, setCount] = useState(0)
+	const [count, setCount] = useState<number>(0)
+	const [value, setvalue] = useState<boolean>(true)
 
+	useEffect(() => {
+		console.log('componentDidmount') //DATA fetch
+		setCount(count + 1) //setCount(count + 1)
+
+		return () => {
+			console.log('componentWillmount')
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [value])
+
+	/** HANDLERS */
 	const buttonHandler = () => {
-		setCount(count + 1)
+		setvalue(!value)
 	}
 
 	return (
