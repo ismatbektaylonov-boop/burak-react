@@ -9,10 +9,10 @@ import Footer from './components/footer'
 import { HomeNavbar } from './components/headers/HomeNavbar'
 import { OtherNavbar } from './components/headers/OtherNavbar'
 import HelpPage from './screens/helpPage'
-// import HomePage from './screens/homePage'
+import HomePage from './screens/homePage'
 import OrdersPage from './screens/ordersPage'
 import ProductsPage from './screens/productsPage'
-import Test from './screens/Test'
+// import Test from './screens/Test'
 import UserPage from './screens/userPage'
 
 function App() {
@@ -38,8 +38,7 @@ function App() {
 					<HelpPage />
 				</Route>
 				<Route path='/'>
-					{/* <HomePage /> */}
-					<Test />
+					<HomePage />
 				</Route>
 			</Switch>
 			<Footer />
