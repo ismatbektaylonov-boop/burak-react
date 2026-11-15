@@ -1,15 +1,15 @@
 import { Dispatch } from '@reduxjs/toolkit'
 import { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { createSelector } from 'reselect'
+import { useDispatch } from 'react-redux'
 import '../../../css/home.css'
+import { ProductCollection } from '../../../lib/enums/product.enum'
 import { Product } from '../../../lib/types/product'
+import ProductService from '../../services/ProductService'
 import ActiveUsers from './ActiveUsers'
 import Advertisement from './Advertisement'
 import Events from './Events'
 import NewDishes from './NewDishes'
 import PopularDishes from './PopularDishes'
-import { retrievePopularDishes } from './selector'
 import { setPopularDishes } from './slice'
 import Statistics from './Statistics'
 
@@ -18,23 +18,27 @@ const actionDispatch = (dispatch: Dispatch) => ({
 	setPopularDishes: (data: Product[]) => dispatch(setPopularDishes(data)),
 })
 
-const popularDishesRetriever = createSelector(
-	retrievePopularDishes,
-	popularDishes => ({ popularDishes }),
-)
-
 export default function HomePage() {
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const { setPopularDishes } = actionDispatch(useDispatch()) // eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const { popularDishes } = useSelector(popularDishesRetriever)
-	// Selector: Store => Data
+	const { setPopularDishes } = actionDispatch(useDispatch())
 
 	useEffect(() => {
 		// BACKEND server data request => Data
-		// Slice: Data => Store
+		const product = new ProductService()
+		product
+			.getProducts({
+				page: 1,
+				limit: 4,
+				order: 'productViews',
+				productCollection: ProductCollection.DISH,
+			})
+			.then(data => {
+				console.log('data passed here', data)
+				setPopularDishes(data)
+			})
+			.catch(err => {
+				console.log(err)
+			})
 	}, [])
-
-	console.log(process.env.REACT_APP_API_URL)
 
 	return (
 		<div className='homepage'>
