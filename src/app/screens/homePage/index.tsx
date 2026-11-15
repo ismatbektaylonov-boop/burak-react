@@ -33,6 +33,9 @@ export default function HomePage() {
 		// BACKEND server data request => Data
 		// Slice: Data => Store
 	}, [])
+
+	console.log(process.env.REACT_APP_API_URL)
+
 	return (
 		<div className='homepage'>
 			<Statistics />
