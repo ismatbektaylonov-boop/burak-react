@@ -7,6 +7,14 @@ import { Box, Button, Container, Stack } from '@mui/material'
 import Badge from '@mui/material/Badge'
 import Pagination from '@mui/material/Pagination'
 import PaginationItem from '@mui/material/PaginationItem'
+// import { useDispatch } from 'react-redux'
+import { Dispatch } from '@reduxjs/toolkit'
+import { setProducts } from './slice'
+// import { useSelector } from 'react-redux'
+import { createSelector } from 'reselect'
+import { Product } from '../../../lib/types/product'
+import { retrieveProducts } from './selector'
+// import { serverApi } from "../../../lib/config";
 
 const products = [
 	{ productName: 'Cutlet', imagePath: '/img/cutlet.webp' },
@@ -18,6 +26,16 @@ const products = [
 	{ productName: 'Kebab', imagePath: '/img/kebab.webp' },
 	{ productName: 'Kebab', imagePath: '/img/kebab-fresh.webp' },
 ]
+
+/** REDUX SLICE*/
+const actionDispatch = (dispatch: Dispatch) => ({
+	setProducts: (data: Product[]) => dispatch(setProducts(data)),
+})
+
+/** REDUX SLICE and SELECTOR */
+const productsRetriever = createSelector(retrieveProducts, products => ({
+	products,
+}))
 
 export default function Products() {
 	return (
