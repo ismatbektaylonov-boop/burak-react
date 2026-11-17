@@ -7,25 +7,16 @@ import { Box, Button, Container, Stack } from '@mui/material'
 import Badge from '@mui/material/Badge'
 import Pagination from '@mui/material/Pagination'
 import PaginationItem from '@mui/material/PaginationItem'
-// import { useDispatch } from 'react-redux'
 import { Dispatch } from '@reduxjs/toolkit'
-import { setProducts } from './slice'
-// import { useSelector } from 'react-redux'
+import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { createSelector } from 'reselect'
+import { serverApi } from '../../../lib/config'
+import { ProductCollection } from '../../../lib/enums/product.enum'
 import { Product } from '../../../lib/types/product'
+import ProductService from '../../services/ProductService'
 import { retrieveProducts } from './selector'
-// import { serverApi } from "../../../lib/config";
-
-const products = [
-	{ productName: 'Cutlet', imagePath: '/img/cutlet.webp' },
-	{ productName: 'Kebab', imagePath: '/img/kebab-fresh.webp' },
-	{ productName: 'Kebab', imagePath: '/img/kebab.webp' },
-	{ productName: 'Lavash', imagePath: '/img/lavash.webp' },
-	{ productName: 'Lavash', imagePath: '/img/lavash.webp' },
-	{ productName: 'Cutlet', imagePath: '/img/cutlet.webp' },
-	{ productName: 'Kebab', imagePath: '/img/kebab.webp' },
-	{ productName: 'Kebab', imagePath: '/img/kebab-fresh.webp' },
-]
+import { setProducts } from './slice'
 
 /** REDUX SLICE*/
 const actionDispatch = (dispatch: Dispatch) => ({
@@ -38,6 +29,23 @@ const productsRetriever = createSelector(retrieveProducts, products => ({
 }))
 
 export default function Products() {
+	const { setProducts } = actionDispatch(useDispatch())
+	const { products } = useSelector(productsRetriever)
+
+	useEffect(() => {
+		const product = new ProductService()
+
+		product
+			.getProducts({
+				page: 1,
+				limit: 8,
+				order: 'createdAt',
+				productCollection: ProductCollection.DISH,
+				search: '',
+			})
+			.then(data => setProducts(data))
+			.catch(err => console.log(err))
+	}, [])
 	return (
 		<div className={'products'}>
 			<Container>
@@ -112,14 +120,19 @@ export default function Products() {
 
 						<Stack className={'product-wrapper'}>
 							{products.length !== 0 ? (
-								products.map((product, index) => {
+								products.map((product: Product) => {
+									const imagePath = `${serverApi}/${product.productImages[0]}`
+									const sizeVolume =
+										product.productCollection === ProductCollection.DRINK
+											? product.productVolume + ' litr'
+											: product.productSize + ' size'
 									return (
-										<Stack key={index} className={'product-card'}>
+										<Stack key={product._id} className={'product-card'}>
 											<Stack
 												className={'product-img'}
-												sx={{ backgroundImage: `url(${product.imagePath})` }}
+												sx={{ backgroundImage: `url(${imagePath})` }}
 											>
-												<div className={'product-sale'}>Normal size</div>
+												<div className={'product-sale'}>{sizeVolume}</div>
 												<Button className={'shop-btn'}>
 													<img
 														src={'/icons/shopping-cart.svg'}
@@ -128,10 +141,14 @@ export default function Products() {
 													/>
 												</Button>
 												<Button className={'view-btn'} sx={{ right: '36px' }}>
-													<Badge badgeContent={20} color='secondary'>
+													<Badge
+														badgeContent={product.productViews}
+														color='secondary'
+													>
 														<RemoveRedEyeIcon
 															sx={{
-																color: true ? 'gray' : 'white',
+																color:
+																	product.productViews === 0 ? 'gray' : 'white',
 															}}
 														/>
 													</Badge>
@@ -143,7 +160,7 @@ export default function Products() {
 												</span>
 												<div className={'product-desc'}>
 													<MonetizationOnIcon />
-													{12}
+													{product.productPrice}
 												</div>
 											</Box>
 										</Stack>
