@@ -13,12 +13,25 @@ import HomePage from './screens/homePage'
 import OrdersPage from './screens/ordersPage'
 import ProductsPage from './screens/productsPage'
 // import Test from './screens/Test'
+import { useState } from 'react'
+import AuthenticationModal from './components/auth'
 import useBasket from './hooks/useBasket'
 import UserPage from './screens/userPage'
 
 function App() {
 	const location = useLocation()
 	const { cartItems, onAdd, onRemove, onDelete, onDeleteAll } = useBasket()
+	const [signupOpen, setSignupOpen] = useState<boolean>(false)
+	const [loginOpen, setLoginOpen] = useState<boolean>(true)
+
+	/** HANDLERS **/
+
+	const handleSignupClose = () => {
+		setSignupOpen(false)
+	}
+	const handleLoginClose = () => {
+		setLoginOpen(false)
+	}
 
 	return (
 		<>
@@ -57,6 +70,13 @@ function App() {
 				</Route>
 			</Switch>
 			<Footer />
+
+			<AuthenticationModal
+				signupOpen={signupOpen}
+				loginOpen={loginOpen}
+				handleLoginClose={handleLoginClose}
+				handleSignupClose={handleSignupClose}
+			/>
 		</>
 	)
 }
