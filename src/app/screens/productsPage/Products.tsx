@@ -283,7 +283,13 @@ export default function Products(props: ProductsProps) {
 														})
 														e.stopPropagation()
 													}}
-												></Button>
+												>
+													<img
+														src={'/icons/shopping-cart.svg'}
+														style={{ display: 'flex' }}
+														alt='Add to Cart'
+													/>
+												</Button>
 												<Button className={'view-btn'} sx={{ right: '36px' }}>
 													<Badge
 														badgeContent={product.productViews}
