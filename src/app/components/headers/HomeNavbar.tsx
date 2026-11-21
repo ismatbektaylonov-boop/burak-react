@@ -1,9 +1,17 @@
-import { Container } from '@mui/material'
-import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import { Stack } from '@mui/system'
+import { Logout } from '@mui/icons-material'
+import {
+	Box,
+	Button,
+	Container,
+	ListItemIcon,
+	Menu,
+	MenuItem,
+	Stack,
+} from '@mui/material'
 import { NavLink } from 'react-router-dom'
+import { serverApi } from '../../../lib/config'
 import { CartItem } from '../../../lib/types/search'
+import { useGlobals } from '../../hooks/useGlobals'
 import Basket from './Basket'
 
 interface HomeNavbarProps {
@@ -14,6 +22,10 @@ interface HomeNavbarProps {
 	onDeleteAll: () => void
 	setSignupOpen: (isOpen: boolean) => void
 	setLoginOpen: (isOpen: boolean) => void
+	handleLogoutClick: (e: React.MouseEvent<HTMLElement>) => void
+	anChorEl: null | HTMLElement
+	handleCloseLogout: () => void
+	handleLogoutRequest: () => void
 }
 
 export default function HomeNavbar(props: HomeNavbarProps) {
@@ -25,8 +37,12 @@ export default function HomeNavbar(props: HomeNavbarProps) {
 		onDeleteAll,
 		setLoginOpen,
 		setSignupOpen,
+		handleLogoutClick,
+		anChorEl,
+		handleCloseLogout,
+		handleLogoutRequest,
 	} = props
-	const authUser = null
+	const { authMember } = useGlobals()
 
 	return (
 		<div className='home-navbar'>
@@ -53,14 +69,14 @@ export default function HomeNavbar(props: HomeNavbarProps) {
 								Products
 							</NavLink>
 						</Box>
-						{authUser ? (
+						{authMember ? (
 							<Box className={'hover-line'}>
 								<NavLink activeClassName={'underline'} to='/orders'>
 									Orders
 								</NavLink>
 							</Box>
 						) : null}
-						{authUser ? (
+						{authMember ? (
 							<Box className={'hover-line'}>
 								<NavLink activeClassName={'underline'} to='/member-page'>
 									My Page
@@ -82,7 +98,7 @@ export default function HomeNavbar(props: HomeNavbarProps) {
 							onDeleteAll={onDeleteAll}
 						/>
 
-						{!authUser ? (
+						{!authMember ? (
 							<Box>
 								<Button
 									className='login-button'
@@ -96,10 +112,57 @@ export default function HomeNavbar(props: HomeNavbarProps) {
 						) : (
 							<img
 								style={{ width: '50px', height: '50px', borderRadius: '24px' }}
-								src={'/icons/default-user.svg'}
+								src={
+									authMember.memberImage
+										? `${serverApi}/${authMember.memberImage}`
+										: '/icons/default-user.svg'
+								}
 								alt='user'
+								onClick={handleLogoutClick}
 							/>
 						)}
+						<Menu
+							anchorEl={anChorEl}
+							id='account-menu'
+							open={Boolean(anChorEl)}
+							onClose={handleCloseLogout}
+							onClick={handleCloseLogout}
+							PaperProps={{
+								elevation: 0,
+								sx: {
+									overflow: 'visible',
+									filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+									mt: 1.5,
+									'& .MuiAvatar-root': {
+										width: 32,
+										height: 32,
+										ml: -0.5,
+										mr: 1,
+									},
+									'&:before': {
+										content: '""',
+										display: 'block',
+										position: 'absolute',
+										top: 0,
+										right: 14,
+										width: 10,
+										height: 10,
+										bgcolor: 'background.paper',
+										transform: 'translateY(-50%) rotate(45deg)',
+										zIndex: 0,
+									},
+								},
+							}}
+							transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+							anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+						>
+							<MenuItem onClick={handleLogoutRequest}>
+								<ListItemIcon>
+									<Logout fontSize='small' style={{ color: 'blue' }} />
+								</ListItemIcon>
+								Logout
+							</MenuItem>
+						</Menu>
 					</Stack>
 				</Stack>
 
@@ -111,7 +174,7 @@ export default function HomeNavbar(props: HomeNavbarProps) {
 						<Box className={'wel-txt'}>The choice, not just a choice</Box>
 						<Box className={'service-txt'}>24 hours Service</Box>
 						<Box className={'signup'}>
-							{!authUser ? (
+							{!authMember ? (
 								<Button
 									variant={'contained'}
 									className={'signup-button'}

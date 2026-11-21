@@ -5,6 +5,7 @@ import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { BrowserRouter as Router } from 'react-router-dom'
 import App from './app/App'
+import ContextProvider from './app/context/ContextProvider'
 import theme from './app/MaterialTheme'
 import { store } from './app/store'
 import './css/index.css'
@@ -17,12 +18,14 @@ const root = createRoot(container)
 root.render(
 	<React.StrictMode>
 		<Provider store={store}>
-			<ThemeProvider theme={theme}>
-				<CssBaseline />
-				<Router>
-					<App />
-				</Router>
-			</ThemeProvider>
+			<ContextProvider>
+				<ThemeProvider theme={theme}>
+					<CssBaseline />
+					<Router>
+						<App />
+					</Router>
+				</ThemeProvider>
+			</ContextProvider>
 		</Provider>
 	</React.StrictMode>,
 )
