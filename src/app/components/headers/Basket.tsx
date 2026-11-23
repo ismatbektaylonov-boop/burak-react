@@ -7,8 +7,12 @@ import IconButton from '@mui/material/IconButton'
 import Menu from '@mui/material/Menu'
 import React from 'react'
 import { useHistory } from 'react-router-dom'
-import { serverApi } from '../../../lib/config'
+import { Messages, serverApi } from '../../../lib/config'
+import { sweetErrorHandling } from '../../../lib/sweetAlert'
 import { CartItem } from '../../../lib/types/search'
+import { useGlobals } from '../../hooks/useGlobals'
+//@ts-ignore
+import OrderService from '../../services/OrderService'
 
 interface BAsketProps {
 	cartItems: CartItem[]
@@ -20,7 +24,7 @@ interface BAsketProps {
 
 export default function Basket(props: BAsketProps) {
 	const { cartItems, onAdd, onRemove, onDelete, onDeleteAll } = props
-	const authMember = null
+	const { authMember } = useGlobals()
 	const history = useHistory()
 
 	const itemsPrice = cartItems.reduce((a: number, c: CartItem) => {
@@ -40,6 +44,26 @@ export default function Basket(props: BAsketProps) {
 	}
 	const handleClose = () => {
 		setAnchorEl(null)
+	}
+
+	const proceedOrderHandler = async () => {
+		try {
+			handleClose()
+			if (!authMember) throw new Error(Messages.error2)
+
+			const order = new OrderService()
+
+			await order.createOrder(cartItems)
+
+			onDeleteAll()
+
+			//REFRESH WITH CONTEXT
+
+			history.push('/orders')
+		} catch (err) {
+			console.log(err)
+			sweetErrorHandling(err).then()
+		}
 	}
 
 	return (
@@ -156,7 +180,11 @@ export default function Basket(props: BAsketProps) {
 							<span className={'price'}>
 								Total: ${totalPrice} ({itemsPrice} + {shippingCost})
 							</span>
-							<Button startIcon={<ShoppingCartIcon />} variant={'contained'}>
+							<Button
+								startIcon={<ShoppingCartIcon />}
+								variant={'contained'}
+								onClick={proceedOrderHandler}
+							>
 								Order
 							</Button>
 						</Box>
